@@ -6,6 +6,20 @@ var timeSort = function (l, r) {
     return r.created_at.localeCompare(l.created_at);
 };
 
+var langLabels = [{
+    name: 'lang-python',
+    color: 'bfd4f2',
+    url: 'https://api.github.com/servo/servo/labels/L-python',
+    selected: true
+  },
+  {
+    name: 'lang-javascript',
+    color: 'bfd4f2',
+    url: 'https://api.github.com/servo/servo/labels/L-python',
+    selected: true
+  },
+]
+
 var getIssueLanguageLabel = function (issue) {
     for (var i = 0; i < issue.labels.length; i++) {
         var label = issue.labels[i];
@@ -39,7 +53,7 @@ var getOpenIssues = function (callback) {
     })
 
     var dataExtractor = extractFunction(callback);
-    $.when(all).done(dataExtractor);
+    $.when(issues).done(dataExtractor);
 };
 
 var makeLabelFriendly = function (label) {
