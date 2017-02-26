@@ -7,15 +7,18 @@ var timeSort = function (l, r) {
 };
 
 var langLabels = [{
-    name: 'lang-python',
+    name: 'lang:python',
     color: 'bfd4f2',
-    url: 'https://api.github.com/servo/servo/labels/L-python',
     selected: true
   },
   {
-    name: 'lang-javascript',
+    name: 'lang:javascript',
     color: 'bfd4f2',
-    url: 'https://api.github.com/servo/servo/labels/L-python',
+    selected: true
+  },
+  {
+    name: 'other',
+    color: 'bfd4f2',
     selected: true
   },
 ]
@@ -24,7 +27,7 @@ var getIssueLanguageLabel = function (issue) {
     for (var i = 0; i < issue.labels.length; i++) {
         var label = issue.labels[i];
         if (/^lang:(.*)/.test(label.name)) {
-            return label;
+            return label.replace('/lang:/i', '');
         }
     }
     return null;
@@ -57,8 +60,7 @@ var getOpenIssues = function (callback) {
 };
 
 var makeLabelFriendly = function (label) {
-  var newLabel = label;
-
+    var newLabel = label;
   var labelMap = {
     'E:easy': 'Good first PR',
     'E:less-easy': 'Mentored'
@@ -66,6 +68,10 @@ var makeLabelFriendly = function (label) {
 
   if (labelMap[label]) {
     return labelMap[label];
+  }
+
+  if (/^lang:/.test(label)) {
+    newLabel = label.replace('lang:', '');
   }
 
   return newLabel;
@@ -211,16 +217,24 @@ var IssueList = React.createClass({
         });
 
         var filteredIssues = issues.filter(function (issue) {
+            var hasLangLabel = false;
             for (var i = 0; i < issue.labels.length; i++) {
-                if (labelNames.indexOf(issue.labels[i].name) > -1) {
-                    return true;
+                hasLangLabel = labelNames.indexOf(issue.labels[i].name) != -1;
+
+                if (hasLangLabel) {
+                    if (labelNames.indexOf(issue.labels[i].name) > -1) {
+                        return true;
+                    }
                 }
+            }
+            if (!hasLangLabel && labelNames.indexOf('other') != -1) {
+                return true;
             }
             return false;
         });
 
         // return filteredIssues;
-        return issues;
+        return filteredIssues;
     },
 
     render: function () {
