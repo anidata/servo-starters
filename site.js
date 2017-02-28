@@ -52,7 +52,7 @@ var getOpenIssues = function (callback) {
     var issues = $.ajax({
         dataType: 'json',
         url: issuesUrl,
-        data: "q=user:anidata+state:open+-label:\"C-has%20open%20PR\"&sort=updated"
+        data: "q=type:issue+user:anidata+state:open+-label:\"C-has%20open%20PR\"&sort=updated"
     })
 
     var dataExtractor = extractFunction(callback);
